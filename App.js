@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Task from './components/Task';
-
+import 'localstorage-polyfill';
 export default function App() {
   const [task, setTask] = useState();
   const [taskItems, setTaskItems] = useState([]);
@@ -17,10 +17,13 @@ export default function App() {
     itemsCopy.splice(index, 1);
     setTaskItems(itemsCopy)
   }
+  useEffect(()=>{
+    localStorage.setItem('todo',JSON.stringify(taskItems))
 
+  },[taskItems]);
   return (
     <View style={styles.container}>
-      {/* Added this scroll view to enable scrolling when list gets longer than the page */}
+      
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1
@@ -28,11 +31,11 @@ export default function App() {
         keyboardShouldPersistTaps='handled'
       >
 
-      {/* Today's Tasks */}
+      
       <View style={styles.tasksWrapper}>
         <Text style={styles.sectionTitle}>Today's tasks</Text>
         <View style={styles.items}>
-          {/* This is where the tasks will go! */}
+          
           {
             taskItems.map((item, index) => {
               return (
@@ -47,10 +50,9 @@ export default function App() {
         
       </ScrollView>
 
-      {/* Write a task */}
-      {/* Uses a keyboard avoiding view which ensures the keyboard does not cover the items on screen */}
+      
       <KeyboardAvoidingView 
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        
         style={styles.writeTaskWrapper}
       >
         <TextInput style={styles.input} placeholder={'Write a task'} value={task} onChangeText={text => setTask(text)} />
